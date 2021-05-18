@@ -1,0 +1,72 @@
+// Copyright (c) 2019, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  final String title;
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  String? selecionado;
+  List<String> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAll().then((lista) {
+      setState(() {
+        items = lista;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: DropdownButton(
+        hint: Text('Selecione um Serviço'),
+        onChanged: (String? valorNovo) {
+          setState(() {
+            selecionado = valorNovo;
+          });
+        },
+        items: items.map((opcao) {
+          return DropdownMenuItem(value: opcao, child: Text(opcao));
+        }).toList()));
+  }
+
+  Future<List<String>> fetchAll() async {
+    List<dynamic> tags = [
+      {'fantasia': 'Coca Cola'},
+      {'fantasia': 'Guarana'},
+      {'fantasia': 'Fanta'}
+    ];
+
+    List<String> fantasia = [];
+    for (var element in tags) {
+      fantasia.add(await element['fantasia']);
+    }
+    return fantasia;
+  }
+}
